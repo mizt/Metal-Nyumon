@@ -87,6 +87,7 @@
 				E02BAEC221727567007989EE /* Sources */,
 				E02BAEC321727567007989EE /* Frameworks */,
 				E02BAEC421727567007989EE /* Resources */,
+				E0AAAB27217360150049E03E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -138,6 +139,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E0AAAB27217360150049E03E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nmkdir -p ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/Contents/Resources\ncp -n ./Resources/* ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/Contents/Resources | true\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E02BAEC221727567007989EE /* Sources */ = {
