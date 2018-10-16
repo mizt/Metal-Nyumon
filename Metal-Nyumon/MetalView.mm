@@ -46,6 +46,8 @@ namespace Plane {
     id<MTLArgumentEncoder> _argumentEncoder;
     id<MTLBuffer> _argumentEncoderBuffer;
     
+    MTLRenderPipelineDescriptor *_renderPipelineDescriptor;
+    
     CGRect _frame;
     double _starttime;
     
@@ -68,17 +70,18 @@ namespace Plane {
     id<MTLFunction> fragmentFunction = [_library newFunctionWithName:@"fragmentShader"];
     if(!fragmentFunction) return nil;
     
-    _argumentEncoder = [fragmentFunction newArgumentEncoderWithBufferIndex:0];
+    if(_renderPipelineDescriptor==nil) {
+        _renderPipelineDescriptor = [MTLRenderPipelineDescriptor new];
+        if(!_renderPipelineDescriptor) return nil;
+        
+        _argumentEncoder = [fragmentFunction newArgumentEncoderWithBufferIndex:0];
+     }
     
+    _renderPipelineDescriptor.depthAttachmentPixelFormat      = MTLPixelFormatInvalid;
+    _renderPipelineDescriptor.stencilAttachmentPixelFormat    = MTLPixelFormatInvalid;
+    _renderPipelineDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
-    MTLRenderPipelineDescriptor *renderPipelineDescriptor = [MTLRenderPipelineDescriptor new];
-    if(!renderPipelineDescriptor) return nil;
-    
-    renderPipelineDescriptor.depthAttachmentPixelFormat      = MTLPixelFormatInvalid;
-    renderPipelineDescriptor.stencilAttachmentPixelFormat    = MTLPixelFormatInvalid;
-    renderPipelineDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
-    
-    MTLRenderPipelineColorAttachmentDescriptor *colorAttachment = renderPipelineDescriptor.colorAttachments[0];
+    MTLRenderPipelineColorAttachmentDescriptor *colorAttachment = _renderPipelineDescriptor.colorAttachments[0];
     colorAttachment.blendingEnabled = YES;
     colorAttachment.rgbBlendOperation = MTLBlendOperationAdd;
     colorAttachment.alphaBlendOperation = MTLBlendOperationAdd;
@@ -87,16 +90,16 @@ namespace Plane {
     colorAttachment.destinationRGBBlendFactor = MTLBlendFactorOneMinusSourceAlpha;
     colorAttachment.destinationAlphaBlendFactor = MTLBlendFactorOne;
     
-    renderPipelineDescriptor.sampleCount = 1;
-    renderPipelineDescriptor.vertexFunction = vertexFunction;
-    renderPipelineDescriptor.fragmentFunction = fragmentFunction;
+    _renderPipelineDescriptor.sampleCount = 1;
+   
+    _renderPipelineDescriptor.vertexFunction = vertexFunction;
+    _renderPipelineDescriptor.fragmentFunction = fragmentFunction;
     
     NSError *error = nil;
-    _renderPipelineState = [_device newRenderPipelineStateWithDescriptor:renderPipelineDescriptor error:&error];
+    _renderPipelineState = [_device newRenderPipelineStateWithDescriptor:_renderPipelineDescriptor error:&error];
     if(error||!_renderPipelineState) return true;
     
     return false;
-    
 }
 
 -(bool)reloadShader:(dispatch_data_t)data {
@@ -236,10 +239,8 @@ namespace Plane {
         [renderEncoder useResource:_mouseBuffer usage:MTLResourceUsageRead];
         [renderEncoder useResource:_texture usage:MTLResourceUsageSample];
 
-
         [renderEncoder setFragmentBuffer:_argumentEncoderBuffer offset:0 atIndex:0];
 
-        
         [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6 instanceCount:1];
         [renderEncoder endEncoding];
         [commandBuffer presentDrawable:_metalDrawable];
