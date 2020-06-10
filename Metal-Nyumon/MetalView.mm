@@ -33,7 +33,6 @@ namespace Plane {
     id<CAMetalDrawable> _metalDrawable;
     
     id<MTLTexture> _drawabletexture;    
-    
     id<MTLTexture> _texture;
 
     id<MTLBuffer> _timeBuffer;
@@ -178,8 +177,6 @@ namespace Plane {
         [_argumentEncoder setBuffer:_resolutionBuffer offset:0 atIndex:1];
         [_argumentEncoder setBuffer:_mouseBuffer offset:0 atIndex:2];
         [_argumentEncoder setTexture:_texture atIndex:3];
-        
-
         
     }
     return self;

@@ -20,7 +20,7 @@ class App {
         dispatch_fd_t fd;
         bool lock = false;
         double timestamp=-1;
-        NSString *path = [[[NSBundle mainBundle] URLForResource:@"main" withExtension:@"metallib"] path];
+        NSString *path = [[[NSBundle mainBundle] URLForResource:@"o0" withExtension:@"metallib"] path];
     
         bool isCapture = false;
         unsigned int *buffer = nullptr;
@@ -45,7 +45,7 @@ class App {
                 hasAlpha:YES
                 isPlanar:NO
                 colorSpaceName:NSDeviceRGBColorSpace
-                bitmapFormat:NSAlphaFirstBitmapFormat
+                bitmapFormat:NSBitmapFormatAlphaFirst
                 bytesPerRow:this->width<<2
                 bitsPerPixel:0
             ];
@@ -121,7 +121,7 @@ class App {
                                      }
                                      
                                      [[NSPasteboard generalPasteboard] clearContents];
-                                     [[NSPasteboard generalPasteboard] setData:[this->rep representationUsingType:NSPNGFileType properties:@{}] forType:NSPasteboardTypePNG];
+                                     [[NSPasteboard generalPasteboard] setData:[this->rep representationUsingType:NSBitmapImageFileTypePNG properties:@{}] forType:NSPasteboardTypePNG];
 
                                      this->isCapture = false;
                                     

@@ -11,22 +11,30 @@ using namespace metal;
 #define mat3 float3x3
 #define mat4 float4x4
 
+#define mod fmod
+#define atan 6.28318530718-atan2
+
 struct VertInOut {
     float4 pos[[position]];
-    float2 texcoord[[user(texturecoord)]];
 };
 
 struct FragmentShaderArguments {
     device float *time[[id(0)]];
     device float2 *resolution[[id(1)]];
     device float2 *mouse[[id(2)]];
-    texture2d<half> texture[[id(3)]];
+    texture2d<float> o0[[id(3)]];
+    texture2d<float> o1[[id(4)]];
+    texture2d<float> o2[[id(5)]];
+    texture2d<float> o3[[id(6)]];
+    texture2d<float> s0[[id(7)]];
+    texture2d<float> s1[[id(8)]];
+    texture2d<float> s2[[id(9)]];
+    texture2d<float> s3[[id(10)]];
 };
 
-vertex VertInOut vertexShader(constant float4 *pos[[buffer(0)]],constant packed_float2  *texcoord[[buffer(1)]],uint vid[[vertex_id]]) {
+vertex VertInOut vertexShader(constant float4 *pos[[buffer(0)]],uint vid[[vertex_id]]) {
     VertInOut outVert;
     outVert.pos = pos[vid];
-    outVert.texcoord = float2(texcoord[vid][0],texcoord[vid][1]);
     return outVert;
 }
 
